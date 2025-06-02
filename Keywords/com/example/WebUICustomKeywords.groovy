@@ -51,8 +51,8 @@ public class WebUICustomKeywords {
 	 * @return All cells inside HTML table row 
 	 */
 	@Keyword
-//	def List<WebElement> getHtmlTableColumns(WebElement row, String tagName) {
-//		List<WebElement> selectedColumns = row.findElements(By.tagName(tagName))
-//		return selectedColumns
-//	}
+	def List<WebElement> getHtmlTableColumns(WebElement row, String tagName) {
+		List<WebElement> selectedColumns = row.findElements(By.tagName(tagName))
+		return selectedColumns
+	}
 }
