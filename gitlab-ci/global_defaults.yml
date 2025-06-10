@@ -89,8 +89,8 @@ stages:
     - Write-Host "Tests Completed"
 
 variables:
-  REPO_URL: "gitlab.com/prahs/core-automation/katalon-projects.git"
-  PROJECT_DIR: "C:/KatalonProjectDir"
+  REPO_URL: "https://gitlab.com/son.huynh4-group/test-ci.git"
+  PROJECT_DIR: $CI_PROJECT_DIR
   SUITE_TYPE: "testSuiteCollectionPath" #This should be "testSuiteCollectionPath" for Test Suite Collections and "testSuitePath" for Test Suites
   BROWSER: "Edge Chromium"
   EXECUTION_PROFILE: "global_CI"
