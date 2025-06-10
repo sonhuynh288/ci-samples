@@ -54,5 +54,9 @@ public class WebUICustomKeywords {
 	def List<WebElement> getHtmlTableColumns(WebElement row, String tagName) {
 		List<WebElement> selectedColumns = row.findElements(By.tagName(tagName))
 		return selectedColumns
+<<<<<<< HEAD
 	}	
+=======
+	}
+>>>>>>> 5556e10b4d4d97504e588a5de7ce9451438d05b4
 }

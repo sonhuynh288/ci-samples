@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
   "keywordFileContentHash": "F1C01E9F52F898DD27EFA2AA80399CC3",
+=======
+  "keywordFileContentHash": "97B84EAADA6A5AADA6158C46CCBBAFFD",
+>>>>>>> 5556e10b4d4d97504e588a5de7ce9451438d05b4
   "keywordClasses": [
     {
       "name": "com.example.WebUICustomKeywords",

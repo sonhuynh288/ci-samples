@@ -4,8 +4,15 @@
    <name>test</name>
    <tag></tag>
    <UUID>c84650ee-cb5e-4a36-b244-5c4df96b316d</UUID>
+<<<<<<< HEAD
    <migratedVersion>5.9.0</migratedVersion>
    <pageLoadTimeout>0</pageLoadTimeout>
+=======
+   <freeLicense>false</freeLicense>
+   <migratedVersion>5.9.0</migratedVersion>
+   <pageLoadTimeout>0</pageLoadTimeout>
+   <projectFileLocation>C:\Users\son.huynh\Downloads\GitLab\test-ci\test.prj</projectFileLocation>
+>>>>>>> 5556e10b4d4d97504e588a5de7ce9451438d05b4
    <sourceContent>
       <sourceFolderList>
          <sourceFolderConfiguration>
@@ -24,5 +31,9 @@
          </systemFolderConfiguration>
       </systemFolderList>
    </sourceContent>
+<<<<<<< HEAD
+=======
+   <timeStampInProperties>true</timeStampInProperties>
+>>>>>>> 5556e10b4d4d97504e588a5de7ce9451438d05b4
    <type>GENERIC</type>
 </Project>
