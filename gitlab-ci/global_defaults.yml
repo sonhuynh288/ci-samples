@@ -61,32 +61,7 @@ stages:
 .job_script:
   stage: Test Suites
   script:
-    - Set-Location $PROJECT_DIR
-    - dir $WORK_DIR    
-    - Write-Host "Running test suite collection $TEST_SUITE"
-    - |
-      katalonc `
-        -noSplash `
-        -runMode=console `
-        -projectPath="$WORK_DIR/katalon-projects.prj" `
-        -retry=1 `
-        -retryStrategy=failedExecutions `
-        -$SUITE_TYPE="$TEST_SUITE" `
-        -browserType="$BROWSER" `
-        -executionProfile="$EXECUTION_PROFILE" `
-        -apiKey="$env:KATALON_API_KEY" `
-        -licenseRelease=true `
-        -orgID=1581984 `
-        -sendMail="$env:EMAIL_RECIPIENTS" `
-        --config `
-          -proxy.auth.option=$PROXY_AUTH_OPTION `
-          -proxy.auth.server.type=$PROXY_AUTH_SERVER_TYPE `
-          -proxy.auth.server.address=$env:PROXY_AUTH_SERVER_ADDRESS `
-          -proxy.auth.server.port=$PROXY_AUTH_SERVER_PORT `
-          -proxy.system.option=$PROXY_SYSTEM_OPTION `
-          -proxy.system.applyToDesiredCapabilities=true `
-          -webui.autoUpdateDrivers=false
-    - Write-Host "Tests Completed"
+    - katalonc.sh -projectPath=$KATALON_PROJECT_DIR -apiKey=$KATALON_API_KEY -browserType="Edge Chromium" -retry=0 -statusDelay=20 -testSuitePath="Test Suites/TS_RegressionTest"
 
 variables:
   REPO_URL: "https://gitlab.com/son.huynh4-group/test-ci.git"
