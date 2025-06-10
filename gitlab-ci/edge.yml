@@ -11,7 +11,7 @@ variables:
 Edge Tests: #Rename this to the desired job name that will be displayed on GitLab.
   variables:
     SUITE_TYPE: "testSuitePath"
-    TEST_SUITE: "Test Suites/Edge/TS_EdgeTests" #Change this to the Test Suite Collection ID you want to execute.
+    TEST_SUITE: "Test Suites/TS_RegressionTest" #Change this to the Test Suite Collection ID you want to execute.
     BROWSER: "Edge Chromium"
   extends: .job_script
   rules:
