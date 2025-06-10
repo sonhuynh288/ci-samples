@@ -1,0 +1,109 @@
+# Global Default settings and scripts for Katalon Jobs
+# ----------------------------------------------------
+# Author/Maintainer: Alessandro Gomes
+# Core Automation Team
+# Last Update: 2025-05-16
+
+stages:
+  - Test Suites
+
+.build_script: &build_script
+  - $TEMP_DIR = "$PROJECT_DIR/.temp/temp_$env:CI_JOB_ID"
+  - $env:TEMP = $TEMP_DIR
+  - $env:TMP = $TEMP_DIR
+  - $CLONE_DIR = "$PROJECT_DIR/$env:CI_COMMIT_REF_NAME"
+  - $WORK_DIR = "$PROJECT_DIR/.jobs/job_$env:CI_JOB_ID"
+  - |
+    New-Item -ItemType Directory -Path $TEMP_DIR | Out-Null
+    if (Test-Path $CLONE_DIR) {
+      Write-Host "Repository directory exists. Updating repository..."
+      Set-Location $CLONE_DIR
+      git fetch origin
+      git reset --hard origin/$env:CI_COMMIT_REF_NAME
+      Write-Host "Repository updated"
+    } else {
+      Write-Host "Repository directory does not exist. Cloning repository from $CI_COMMIT_REF_NAME..."
+      git clone --depth 1 -b $env:CI_COMMIT_REF_NAME https://$env:CI_REPO_TOKEN@$REPO_URL $CLONE_DIR
+      dir $CLONE_DIR
+      Write-Host "Repository cloned"
+    }
+    Write-Host "Copying repository to job-specific directory: $WORK_DIR"
+    Start-Process robocopy -ArgumentList "$CLONE_DIR $WORK_DIR /E /XD .git /NFL /NDL /NJH /NJS /NP" -NoNewWindow -Wait
+
+.cleanup_script: &cleanup_script
+  - $WORK_DIR = "$PROJECT_DIR/.jobs/job_$env:CI_JOB_ID"
+  - $TEMP_DIR = "$PROJECT_DIR/.temp/temp_$env:CI_JOB_ID"
+  - Write-Host "Cleaning up environment..."
+  - |
+    $CLEANUP_ARRAY = @("$WORK_DIR", "$TEMP_DIR")
+    foreach ($CLEANUP_DIR in $CLEANUP_ARRAY) {
+      $attempt = 0
+      $deleted = $false
+      while (-not $deleted -and $attempt -lt 5) {
+        try {      
+          Write-Host "Attempt $($attempt +1): Cleaning up $CLEANUP_DIR"
+          if (Test-Path $CLEANUP_DIR) {
+            Remove-Item -Path "$CLEANUP_DIR" -Recurse -Force -ErrorAction Stop
+            Write-Host "$CLEANUP_DIR removed successfully."
+            $deleted = $true
+          } else {
+            Write-Host "Directory does not exist, skipping removal."
+            $deleted = $true
+          }
+        } catch {
+          Write-Host "Attempt $($attempt +1) failed to perform the cleanup: $_"
+          Start-Sleep -Seconds 5
+        }
+        $attempt++
+      }
+    }
+
+.job_script:
+  stage: Test Suites
+  script:
+    - Set-Location $PROJECT_DIR
+    - dir $WORK_DIR    
+    - Write-Host "Running test suite collection $TEST_SUITE"
+    - |
+      katalonc `
+        -noSplash `
+        -runMode=console `
+        -projectPath="$WORK_DIR/katalon-projects.prj" `
+        -retry=1 `
+        -retryStrategy=failedExecutions `
+        -$SUITE_TYPE="$TEST_SUITE" `
+        -browserType="$BROWSER" `
+        -executionProfile="$EXECUTION_PROFILE" `
+        -apiKey="$env:KATALON_API_KEY" `
+        -licenseRelease=true `
+        -orgID=1581984 `
+        -sendMail="$env:EMAIL_RECIPIENTS" `
+        --config `
+          -proxy.auth.option=$PROXY_AUTH_OPTION `
+          -proxy.auth.server.type=$PROXY_AUTH_SERVER_TYPE `
+          -proxy.auth.server.address=$env:PROXY_AUTH_SERVER_ADDRESS `
+          -proxy.auth.server.port=$PROXY_AUTH_SERVER_PORT `
+          -proxy.system.option=$PROXY_SYSTEM_OPTION `
+          -proxy.system.applyToDesiredCapabilities=true `
+          -webui.autoUpdateDrivers=false
+    - Write-Host "Tests Completed"
+
+variables:
+  REPO_URL: "gitlab.com/prahs/core-automation/katalon-projects.git"
+  PROJECT_DIR: "C:/KatalonProjectDir"
+  SUITE_TYPE: "testSuiteCollectionPath" #This should be "testSuiteCollectionPath" for Test Suite Collections and "testSuitePath" for Test Suites
+  BROWSER: "Edge Chromium"
+  EXECUTION_PROFILE: "global_CI"
+  # Proxy Variables settings: https://docs.katalon.com/katalon-studio/execute-tests/katalon-runtime-engine/command-line-syntax-in-katalon-runtime-engine#authentication-proxy-arguments
+  PROXY_AUTH_OPTION: "MANUAL_CONFIG"
+  PROXY_AUTH_SERVER_TYPE: "HTTP"
+  PROXY_AUTH_SERVER_PORT: "80"
+  PROXY_SYSTEM_OPTION: "NO_PROXY"
+
+default:
+  before_script:
+    - *build_script
+  after_script:
+    - *cleanup_script
+  tags:
+    - katalon-tests

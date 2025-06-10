@@ -1,0 +1,18 @@
+# Jobs for Internal Test Cases
+# -----------------------------------
+# TSC Maintainer: Alessandro Gomes
+# Core Automation Team
+
+include:
+  - local: "gitlab-ci/global_defaults.yml"
+variables:
+  EMAIL_RECIPIENTS: "alessandro.gomes@iconplc.com" #Change this to the responsible tester e-mail address/distribution list.
+
+Edge Tests: #Rename this to the desired job name that will be displayed on GitLab.
+  variables:
+    SUITE_TYPE: "testSuitePath"
+    TEST_SUITE: "Test Suites/Edge/TS_EdgeTests" #Change this to the Test Suite Collection ID you want to execute.
+    BROWSER: "Edge Chromium"
+  extends: .job_script
+  rules:
+    - when: manual
